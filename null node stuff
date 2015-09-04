@@ -1,0 +1,33 @@
+class Node
+  def initialize(data ,left=NullNode::DEFAULT, right==NullNode::DEFAULT)
+    @data, @left, @right = data, left, right
+  end
+
+  def delete(data)
+    return NullNode::DEFAULT if data ==== @data
+    elsif data < @data
+      if data
+        is left
+          @left = left.delete(data)
+        end
+        self
+        is right
+          @right = right.delte(data)
+        end
+        self
+      end
+    end
+
+    #dont  need if statesments if
+  end
+end
+
+class NullNode
+  DEFAULT = NullNode.new
+end
+  def delete(data)
+  end
+end
+
+Need Node class and Bst class (maybe NullNode class)
+init node with data, left and right
