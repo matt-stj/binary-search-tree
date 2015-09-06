@@ -68,39 +68,29 @@ attr_accessor :root_node
    end
 
    def maximum
+     return "The tree is empty" if @root_node.nil?
      current_node = @root_node
      while current_node != NullNode::DEFAULT
-       maximum = current_node.data
-        if data == current_node.data
-          return maximum
-        elsif data < current_node.data && data != current_node.data
-          current_node = current_node.left
-          maximum = current_node.data if current_node.data > maximum
-        elsif data > current_node.data && data != current_node.data
-          current_node = current_node.right
-          maximum = current_node.data if current_node.data > maximum
-        end
-          if current_node == NullNode::DEFAULT
-            return depth
-        end
-      end
+       current_node = current_node.right
+       if current_node.right == NullNode::DEFAULT
+         return current_node.data
+       end
+     end
+   end
+
+   def minimum
+     return "The tree is empty" if @root_node.nil?
+     current_node = @root_node
+     while current_node != NullNode::DEFAULT
+       current_node = current_node.left
+       if current_node.left == NullNode::DEFAULT
+         return current_node.data
+       end
+     end
    end
 
 end
 bst = BinarySearchTree.new
-bst.insert("d")
-bst
-bst.insert("c")
-bst
-bst.insert("b")
-bst.insert("a")
-bst.insert("f")
-bst.insert("g")
-bst.insert("h")
-bst.insert("k")
 
-bst
-bst.include?("a")
-bst.depth_of("f")
-bst
+
 bst.maximum

@@ -64,4 +64,78 @@ class BinarySearchTreeTest < Minitest::Test
     assert_equal "r", tree.root_node.right.right.data
   end
 
+  def test_we_can_check_if_the_tree_includes_a_given_value
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("m")
+    tree.insert("r")
+    assert_equal "r", tree.root_node.right.right.data
+    assert tree.include?("r")
+  end
+
+  def test_we_can_determine_if_the_tree_does_not_include_a_given_value
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("m")
+    tree.insert("r")
+    assert_equal "r", tree.root_node.right.right.data
+    refute tree.include?("z")
+  end
+
+  def test_we_can_determine__the_depth_of_a_given_value
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("m")
+    tree.insert("r")
+    tree.insert("p")
+    assert_equal 3, tree.depth_of("p")
+  end
+
+
+  def test_the_depth_of_the_root_node_will_be_returned_as_zero
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("m")
+    tree.insert("r")
+    tree.insert("p")
+    assert_equal 0, tree.depth_of("f")
+  end
+
+  def test_we_can_find_the_maximum_value_in_a_given_tree
+    tree = BinarySearchTree.new
+    tree.insert("d")
+    tree.insert("c")
+    tree.insert("b")
+    tree.insert("a")
+    tree.insert("f")
+    tree.insert("g")
+    tree.insert("h")
+    tree.insert("k")
+    assert_equal "k", tree.maximum
+  end
+
+  def test_we_get_notified_if_calling_maximum_on_an_empty_tree
+    tree = BinarySearchTree.new
+    assert_equal "The tree is empty", tree.maximum
+  end
+
+  def test_we_can_find_the_minimum_value_in_a_given_tree
+    tree = BinarySearchTree.new
+    tree.insert("d")
+    tree.insert("c")
+    tree.insert("b")
+    tree.insert("a")
+    tree.insert("f")
+    tree.insert("g")
+    tree.insert("h")
+    tree.insert("k")
+    assert_equal "a", tree.minimum
+  end
+
+  def test_we_get_notified_if_calling_minimum_on_an_empty_tree
+    tree = BinarySearchTree.new
+    assert_equal "The tree is empty", tree.minimum
+  end
+
+
 end
