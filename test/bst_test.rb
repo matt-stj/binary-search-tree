@@ -137,5 +137,7 @@ class BinarySearchTreeTest < Minitest::Test
     assert_equal "The tree is empty", tree.minimum
   end
 
+  def test_delete_notify_if_value_doesnt_exist
+  end
 
 end
