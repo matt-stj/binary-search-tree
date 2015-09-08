@@ -9,7 +9,32 @@ attr_accessor :root_node
     @root_node = root_node
   end
 
-  # REFACTOR SEARCHER FOR ALL APPLICABLE METHODS
+  def import_data
+    @input_values = []
+    input_file = File.open(ARGV.first, "r")
+    input_file.each_line do |line|
+      line = line.chomp
+        if line.class != String
+        line = line.to_i
+        end
+      @input_values.push(line)
+      @tree = BinarySearchTree.new
+    @input_values.each do |data|
+      @tree.insert(data)
+    end
+    end
+  end
+
+  def export_data
+    writer = File.open(ARGV[1], 'w')
+    sorted = @tree.sort
+    writer.write(@push_to_array)
+    sorted.each do |data|
+      writer.write("#{data}\n")
+    end
+    writer.flush
+    writer.close
+  end
 
   def insert(data)
        new_node = Node.new(data)
@@ -48,8 +73,8 @@ attr_accessor :root_node
         elsif data > current_node.data && data != current_node.data
           current_node = current_node.right
         end
-          if current_node == NullNode::DEFAULT
-            return false
+        if current_node == NullNode::DEFAULT
+          return false
         end
       end
    end
@@ -95,15 +120,17 @@ attr_accessor :root_node
    end
  end
 
-   def sort(node = @root_node)
-     if node.left != NullNode::DEFAULT
-       sort(node.left)
-     end
-          puts node.data
-     if node.right != NullNode::DEFAULT
-       sort(node.right)
-     end
-   end
+ def sort(node = @root_node)
+      sorted_data = []
+      if node.left != NullNode::DEFAULT
+        sorted_data.push(sort(node.left))
+      end
+        sorted_data.push(node.data)
+      if node.right != NullNode::DEFAULT
+        sorted_data.push(sort(node.right))
+      end
+      @push_to_array = sorted_data.flatten
+    end
 
    def delete(data)
      current_node = @root_node
@@ -118,11 +145,18 @@ attr_accessor :root_node
 
 
    def delete_left(data)
-     deleted_node = find_node(data)
-     deleted_node_right_child = find_node(data).right
-     replacer = deleted_node.left
-     parent = find_parent(data)
-     subtree_minimum = minimum_node(deleted_node_right_child)
+     deleted_node = find_node(data); deleted_node_right_child = find_node(data).right
+     replacer = deleted_node.left; parent = find_parent(data); subtree_minimum = minimum_node(deleted_node_right_child)
+     delete_conditionals(deleted_node, deleted_node_right_child, replacer, parent, subtree_minimum)
+     if delete_conditionals(deleted_node, deleted_node_right_child, replacer, parent, subtree_minimum) == false
+       parent.left = replacer
+       subtree_minimum.left = replacer.right if subtree_minimum != nil
+       replacer.right = deleted_node.right.left if deleted_node.right.left == nil
+       replacer.right = deleted_node.right
+     end
+   end
+
+   def delete_conditionals(deleted_node, deleted_node_right_child, replacer, parent, subtree_minimum)
      if deleted_node.left == NullNode::DEFAULT && deleted_node.right != NullNode::DEFAULT
        parent.left = deleted_node.right
      elsif deleted_node.right == NullNode::DEFAULT && deleted_node.left != NullNode::DEFAULT
@@ -134,26 +168,15 @@ attr_accessor :root_node
        deleted_node.right.left = replacer.right
        replacer.right = deleted_node.right
      else
-       parent.left = replacer
-       subtree_minimum.left = replacer.right if subtree_minimum != nil
-       replacer.right = deleted_node.right.left if deleted_node.right.left == nil
-       replacer.right = deleted_node.right
+       return false
      end
    end
 
    def delete_right(data)
-     deleted_node = find_node(data)
-     deleted_node_right_child = find_node(data).right
-     replacer = deleted_node.left
-     parent = find_parent(data)
-     subtree_minimum = minimum_node(deleted_node_right_child)
-     if deleted_node.left == NullNode::DEFAULT && deleted_node.right != NullNode::DEFAULT
-       parent.left = deleted_node.right
-     elsif deleted_node.right == NullNode::DEFAULT && deleted_node.left != NullNode::DEFAULT
-       parent.left = deleted_node.left
-     elsif deleted_node.left == NullNode::DEFAULT && deleted_node.right == NullNode::DEFAULT
-       parent.left = NullNode::DEFAULT
-     else
+     deleted_node = find_node(data); deleted_node_right_child = find_node(data).right
+     replacer = deleted_node.left; parent = find_parent(data); subtree_minimum = minimum_node(deleted_node_right_child)
+     delete_conditionals(deleted_node, deleted_node_right_child, replacer, parent, subtree_minimum)
+     if delete_conditionals(deleted_node, deleted_node_right_child, replacer, parent, subtree_minimum) == false
        parent.right = replacer
        subtree_minimum.left = replacer.right if subtree_minimum != nil
        replacer.right = deleted_node.right.left if deleted_node.right.left == nil
@@ -187,22 +210,6 @@ attr_accessor :root_node
        return current_node
    end
 
-   def find_node(data)
-     current_node = @root_node
-     while current_node != NullNode::DEFAULT
-        if data == current_node.data
-          return current_node
-        elsif data < current_node.data && data != current_node.data
-          current_node = current_node.left
-        elsif data > current_node.data && data != current_node.data
-          current_node = current_node.right
-        end
-          if current_node == NullNode::DEFAULT
-            return false
-        end
-      end
-   end
-
    def minimum_node(node)
     current_node = node
     while current_node != NullNode::DEFAULT
@@ -213,35 +220,26 @@ attr_accessor :root_node
     end
   end
 
+  def find_node(data)
+    current_node = @root_node
+    while current_node != NullNode::DEFAULT
+       if data == current_node.data
+         return current_node
+       elsif data < current_node.data && data != current_node.data
+         current_node = current_node.left
+       elsif data > current_node.data && data != current_node.data
+         current_node = current_node.right
+       end
+         if current_node == NullNode::DEFAULT
+           return false
+       end
+     end
+  end
+
+private :minimum_node, :find_node, :right_parent, :left_parent, :find_parent, :delete_right, :delete_conditionals, :delete_left, :insert_loop
 
 end
 
-bst = BinarySearchTree.new
-
-
-bst.maximum
-
-# bst.insert("f")
-# bst.insert("g")
-# bst.insert("d")
-# bst.insert("e")
-# bst.insert("c")
-# bst.insert("ba")
-# bst.insert("ca")
-# bst.insert("da")
-# bst.insert("ea")
-
-bst.insert("f")
-bst.insert("d")
-bst.insert("g")
-bst.insert("fb")
-bst.insert("fa")
-bst.insert("fc")
-bst.insert("gb")
-bst.insert("ga")
-bst.insert("gc")
-
-bst
-
-bst.delete("g")
-bst
+@tree = BinarySearchTree.new
+@tree.import_data
+@tree.export_data

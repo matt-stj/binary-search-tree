@@ -149,7 +149,6 @@ class BinarySearchTreeTest < Minitest::Test
   end
 
   def test_sort_works_for_integers
-    skip
     tree = BinarySearchTree.new
     tree.insert(50)
     tree.insert(45)
@@ -160,12 +159,10 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert(15)
     tree.insert(200)
     sorted_array = []
-    sorted_array.push(tree.sort)
-    assert_equal 15, 20, 30, 45, 50, 60, 80, 200
+    assert_equal [15, 20, 30, 45, 50, 60, 80, 200], tree.sort
   end
 
   def test_sort_works_for_strings
-    skip
     tree = BinarySearchTree.new
     tree.insert("d")
     tree.insert("c")
@@ -175,7 +172,7 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert("g")
     tree.insert("h")
     tree.insert("k")
-    assert_equal
+    assert_equal ["a", "b", "c", "d", "f", "g", "h", "k"], tree.sort
   end
 
   def test_delete_will_notify_if_value_doesnt_exist
