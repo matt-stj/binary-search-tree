@@ -9,32 +9,32 @@ attr_accessor :root_node
     @root_node = root_node
   end
 
-  def import_data(file)
-    @input_values = []
-    input_file = File.open(file)
-    input_file.each_line do |line|
-      line = line.chomp
-        if line.class != String
-        line = line.to_i
-        end
-      @input_values.push(line)
-      @tree = BinarySearchTree.new
-    @input_values.each do |data|
-      @tree.insert(data)
-    end
-    end
-  end
-
-  def export_data(file)
-    writer = File.open(file)
-    sorted = @tree.sort
-    writer.write(@push_to_array)
-    sorted.each do |data|
-      writer.write("#{data}\n")
-    end
-    writer.flush
-    writer.close
-  end
+  # def import_data
+  #   @input_values = []
+  #   input_file = File.open(ARGV[0], "r")
+  #   input_file.each_line do |line|
+  #     line = line.chomp
+  #       if line.class != String
+  #       line = line.to_i
+  #       end
+  #     @input_values.push(line)
+  #     @tree = BinarySearchTree.new
+  #   @input_values.each do |data|
+  #     @tree.insert(data)
+  #   end
+  #   end
+  # end
+  #
+  # def export_data
+  #   writer = File.open(ARGV[1], "w")
+  #   sorted = @tree.sort
+  #   writer.write(@push_to_array)
+  #   sorted.each do |data|
+  #     writer.write("#{data}\n")
+  #   end
+  #   writer.flush
+  #   writer.close
+  # end
 
   def insert(data)
        new_node = Node.new(data)
@@ -240,6 +240,6 @@ private :minimum_node, :find_node, :right_parent, :left_parent, :find_parent, :d
 
 end
 
-@tree = BinarySearchTree.new
-@tree.import_data(~/Turing/1 Modual/Projects/binary_search_tree/input/input.txt)
-@tree.export_data((~/Turing/1 Modual/Projects/binary_search_tree/output/output.txt)
+# @tree = BinarySearchTree.new
+# @tree.import_data
+# @tree.export_data
