@@ -108,11 +108,11 @@ attr_accessor :root_node
        return "the value doesn't exist"
      elsif data < @root_node.data
        delete_left(data)
+     elsif data > @root_node.data
+       delete_right
 
-      # use include? depth_of and min/max
-      #  left side -
-      #  find upstream node of given node
-      #  remap upstream's left node to given node's right node
+       # zero children
+       # one child
      end
    end
 
@@ -120,11 +120,23 @@ attr_accessor :root_node
    def delete_left(data)
      deleted_node = find_node(data)
      deleted_node_right_child = find_node(data).right
+     replacer = deleted_node.left
      parent = find_parent(data)
      subtree_minimum = minimum_node(deleted_node_right_child)
-     parent.left = deleted_node.right
-     subtree_minimum.left = deleted_node.left
-    # deleted nodes left node becomes the min value of the right
+     parent.left = replacer
+     subtree_minimum.left = replacer.right
+     replacer.right = deleted_node.right
+   end
+
+   def delete_right(data)
+     deleted_node = find_node(data)
+     deleted_node_right_child = find_node(data).right
+     replacer = deleted_node.left
+     parent = find_parent(data)
+     subtree_minimum = minimum_node(deleted_node_right_child)
+     parent.right = replacer
+     subtree_minimum.left = replacer.right
+     replacer.right = deleted_node.right
    end
 
    def find_parent(data)
@@ -187,21 +199,65 @@ bst = BinarySearchTree.new
 
 bst.maximum
 
-bst.insert("d")
-bst.insert("b")
-bst.insert("a")
-bst.insert("c")
-bst.insert("ba")
-bst.insert("ca")
 bst.insert("f")
-bst.insert("m")
-bst.insert("r")
-bst.insert("z")
+bst.insert("d")
+bst.insert("g")
+bst.insert("fb")
+bst.insert("fa")
+bst.insert("fc")
+bst.insert("gb")
+bst.insert("ga")
+bst.insert("gc")
+
 
 bst.sort
 bst.depth_of("b")
 
 bst.minimum
 bst.find_node("b")
-bst.delete_left("b")
+bst.delete_right("g")
 bst
+# => #<BinarySearchTree:0x007faca19129b8
+#     @root_node=
+#      #<Node:0x007faca1912940
+#       @data="f",
+#       @left=
+#        #<Node:0x007faca19128f0
+#         @data="d",
+#         @left=#<NullNode:0x007faca1918390>,
+#         @right=#<NullNode:0x007faca1918390>>,
+#       @right=
+#        #<Node:0x007faca1912850
+#         @data="fb",
+#         @left=
+#          #<Node:0x007faca1912800
+#           @data="fa",
+#           @left=#<NullNode:0x007faca1918390>,
+#           @right=#<NullNode:0x007faca1918390>>,
+#         @right=
+#          #<Node:0x007faca1912738
+#           @data="gb",
+#           @left=
+#            #<Node:0x007faca19126e8
+#             @data="ga",
+#             @left=
+#              #<Node:0x007faca19127b0
+#               @data="fc",
+#               @left=#<NullNode:0x007faca1918390>,
+#               @right=#<NullNode:0x007faca1918390>>,
+#             @right=#<NullNode:0x007faca1918390>>,
+#           @right=
+#            #<Node:0x007faca1912698
+#             @data="gc",
+#             @left=#<NullNode:0x007faca1918390>,
+#             @right=#<NullNode:0x007faca1918390>>>>>>
+
+# >> d
+# >> f
+# >> fa
+# >> fb
+# >> fc
+# >> g
+# >> ga
+# >> gb
+# >> gc

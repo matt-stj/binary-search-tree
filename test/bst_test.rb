@@ -140,4 +140,16 @@ class BinarySearchTreeTest < Minitest::Test
   def test_delete_notify_if_value_doesnt_exist
   end
 
+  def test_delete_left_works
+    tree = BinarySearchTree.new
+    tree.insert("d")
+    tree.insert("c")
+    tree.insert("b")
+    tree.insert("a")
+    tree.insert("f")
+    tree.insert("g")
+    tree.insert("h")
+    tree.insert("k")
+  end
+
 end
