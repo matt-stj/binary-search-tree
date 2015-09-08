@@ -11,28 +11,31 @@ attr_accessor :root_node
 
   # REFACTOR SEARCHER FOR ALL APPLICABLE METHODS
 
-
   def insert(data)
        new_node = Node.new(data)
        if @root_node.nil?
          @root_node = new_node
        elsif @root_node != nil
-           current_node = @root_node
-         while current_node != NullNode::DEFAULT
-             if data < current_node.data && current_node.left == NullNode::DEFAULT
-                 current_node.left = new_node
-             elsif data > current_node.data && current_node.right == NullNode::DEFAULT
-                 current_node.right = new_node
-             elsif data < current_node.data
-                 current_node = current_node.left
-             elsif data > current_node.data
-                 current_node = current_node.right
-             else
-                 return
-             end
-         end
+         insert_loop(data, new_node)
        end
    end
+
+   def insert_loop(data, new_node)
+     current_node = @root_node
+       while current_node != NullNode::DEFAULT
+         if data < current_node.data && current_node.left == NullNode::DEFAULT
+             current_node.left = new_node
+         elsif data > current_node.data && current_node.right == NullNode::DEFAULT
+             current_node.right = new_node
+         elsif data < current_node.data
+             current_node = current_node.left
+         elsif data > current_node.data
+             current_node = current_node.right
+         else
+             return
+         end
+       end
+     end
 
 
    def include?(data)
@@ -109,10 +112,7 @@ attr_accessor :root_node
      elsif data < @root_node.data
        delete_left(data)
      elsif data > @root_node.data
-       delete_right
-
-       # zero children
-       # one child
+       delete_right(data)
      end
    end
 
@@ -123,9 +123,22 @@ attr_accessor :root_node
      replacer = deleted_node.left
      parent = find_parent(data)
      subtree_minimum = minimum_node(deleted_node_right_child)
-     parent.left = replacer
-     subtree_minimum.left = replacer.right
-     replacer.right = deleted_node.right
+     if deleted_node.left == NullNode::DEFAULT && deleted_node.right != NullNode::DEFAULT
+       parent.left = deleted_node.right
+     elsif deleted_node.right == NullNode::DEFAULT && deleted_node.left != NullNode::DEFAULT
+       parent.left = deleted_node.left
+     elsif deleted_node.left == NullNode::DEFAULT && deleted_node.right == NullNode::DEFAULT
+       parent.left = NullNode::DEFAULT
+     elsif deleted_node.right.left == NullNode::DEFAULT
+       parent.left = replacer
+       deleted_node.right.left = replacer.right
+       replacer.right = deleted_node.right
+     else
+       parent.left = replacer
+       subtree_minimum.left = replacer.right if subtree_minimum != nil
+       replacer.right = deleted_node.right.left if deleted_node.right.left == nil
+       replacer.right = deleted_node.right
+     end
    end
 
    def delete_right(data)
@@ -134,9 +147,18 @@ attr_accessor :root_node
      replacer = deleted_node.left
      parent = find_parent(data)
      subtree_minimum = minimum_node(deleted_node_right_child)
-     parent.right = replacer
-     subtree_minimum.left = replacer.right
-     replacer.right = deleted_node.right
+     if deleted_node.left == NullNode::DEFAULT && deleted_node.right != NullNode::DEFAULT
+       parent.left = deleted_node.right
+     elsif deleted_node.right == NullNode::DEFAULT && deleted_node.left != NullNode::DEFAULT
+       parent.left = deleted_node.left
+     elsif deleted_node.left == NullNode::DEFAULT && deleted_node.right == NullNode::DEFAULT
+       parent.left = NullNode::DEFAULT
+     else
+       parent.right = replacer
+       subtree_minimum.left = replacer.right if subtree_minimum != nil
+       replacer.right = deleted_node.right.left if deleted_node.right.left == nil
+       replacer.right = deleted_node.right
+     end
    end
 
    def find_parent(data)
@@ -199,6 +221,16 @@ bst = BinarySearchTree.new
 
 bst.maximum
 
+# bst.insert("f")
+# bst.insert("g")
+# bst.insert("d")
+# bst.insert("e")
+# bst.insert("c")
+# bst.insert("ba")
+# bst.insert("ca")
+# bst.insert("da")
+# bst.insert("ea")
+
 bst.insert("f")
 bst.insert("d")
 bst.insert("g")
@@ -209,55 +241,7 @@ bst.insert("gb")
 bst.insert("ga")
 bst.insert("gc")
 
-
-bst.sort
-bst.depth_of("b")
-
-bst.minimum
-bst.find_node("b")
-bst.delete_right("g")
 bst
-# => #<BinarySearchTree:0x007faca19129b8
-#     @root_node=
-#      #<Node:0x007faca1912940
-#       @data="f",
-#       @left=
-#        #<Node:0x007faca19128f0
-#         @data="d",
-#         @left=#<NullNode:0x007faca1918390>,
-#         @right=#<NullNode:0x007faca1918390>>,
-#       @right=
-#        #<Node:0x007faca1912850
-#         @data="fb",
-#         @left=
-#          #<Node:0x007faca1912800
-#           @data="fa",
-#           @left=#<NullNode:0x007faca1918390>,
-#           @right=#<NullNode:0x007faca1918390>>,
-#         @right=
-#          #<Node:0x007faca1912738
-#           @data="gb",
-#           @left=
-#            #<Node:0x007faca19126e8
-#             @data="ga",
-#             @left=
-#              #<Node:0x007faca19127b0
-#               @data="fc",
-#               @left=#<NullNode:0x007faca1918390>,
-#               @right=#<NullNode:0x007faca1918390>>,
-#             @right=#<NullNode:0x007faca1918390>>,
-#           @right=
-#            #<Node:0x007faca1912698
-#             @data="gc",
-#             @left=#<NullNode:0x007faca1918390>,
-#             @right=#<NullNode:0x007faca1918390>>>>>>
 
-# >> d
-# >> f
-# >> fa
-# >> fb
-# >> fc
-# >> g
-# >> ga
-# >> gb
-# >> gc
+bst.delete("g")
+bst

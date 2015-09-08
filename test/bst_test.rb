@@ -64,6 +64,17 @@ class BinarySearchTreeTest < Minitest::Test
     assert_equal "r", tree.root_node.right.right.data
   end
 
+  def test_we_can_properly_insert_integers_with_negative_values_into_tree
+    tree = BinarySearchTree.new
+    tree.insert("50")
+    assert_equal "50", tree.root_node.data
+    assert_equal NullNode::DEFAULT, tree.root_node.right
+    tree.insert("-1")
+    assert_equal "-1", tree.root_node.left.data
+    tree.insert("100")
+    assert_equal "100", tree.root_node.left.right.data
+  end
+
   def test_we_can_check_if_the_tree_includes_a_given_value
     tree = BinarySearchTree.new
     tree.insert("f")
@@ -137,10 +148,24 @@ class BinarySearchTreeTest < Minitest::Test
     assert_equal "The tree is empty", tree.minimum
   end
 
-  def test_delete_notify_if_value_doesnt_exist
+  def test_sort_works_for_integers
+    skip
+    tree = BinarySearchTree.new
+    tree.insert(50)
+    tree.insert(45)
+    tree.insert(30)
+    tree.insert(60)
+    tree.insert(80)
+    tree.insert(20)
+    tree.insert(15)
+    tree.insert(200)
+    sorted_array = []
+    sorted_array.push(tree.sort)
+    assert_equal 15, 20, 30, 45, 50, 60, 80, 200
   end
 
-  def test_delete_left_works
+  def test_sort_works_for_strings
+    skip
     tree = BinarySearchTree.new
     tree.insert("d")
     tree.insert("c")
@@ -150,6 +175,94 @@ class BinarySearchTreeTest < Minitest::Test
     tree.insert("g")
     tree.insert("h")
     tree.insert("k")
+    assert_equal
+  end
+
+  def test_delete_will_notify_if_value_doesnt_exist
+    tree = BinarySearchTree.new
+    tree.insert("d")
+    tree.insert("c")
+    assert_equal "the value doesn't exist", tree.delete("z")
+  end
+
+  def test_delete_works_on_left_side_of_root_for_node_with_2_child_nodes
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("d")
+    tree.insert("e")
+    tree.insert("c")
+    tree.insert("ba")
+    tree.insert("ca")
+    tree.insert("da")
+    tree.insert("ea")
+    assert_equal "d", tree.root_node.left.data
+    assert_equal "e", tree.root_node.left.right.data
+    assert_equal "c", tree.root_node.left.left.data
+    tree.delete("d")
+    assert_equal "c", tree.root_node.left.data
+    assert_equal "e", tree.root_node.left.right.data
+    assert_equal "ba", tree.root_node.left.left.data
+    assert_equal "ca", tree.root_node.left.right.left.left.data
+  end
+
+  def test_delete_works_on_right_side_of_root_for_node_with_2_child_nodes
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("g")
+    tree.insert("fb")
+    tree.insert("fa")
+    tree.insert("fc")
+    tree.insert("gb")
+    tree.insert("ga")
+    tree.insert("gc")
+    assert_equal "g", tree.root_node.right.data
+    assert_equal "gb", tree.root_node.right.right.data
+    assert_equal "fb", tree.root_node.right.left.data
+    tree.delete("g")
+    assert_equal "fb", tree.root_node.right.data
+    assert_equal "gb", tree.root_node.right.right.data
+    assert_equal "fa", tree.root_node.right.left.data
+    assert_equal "fc", tree.root_node.right.right.left.left.data
+  end
+
+  def test_delete_works_for_nodes_with_one_left_child
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("d")
+    tree.insert("c")
+    assert_equal "d", tree.root_node.left.data
+    assert_nil tree.root_node.left.right.data
+    assert_equal "c", tree.root_node.left.left.data
+    tree.delete("d")
+    assert_equal "c", tree.root_node.left.data
+    assert_nil tree.root_node.left.right.data
+  end
+
+  def test_delete_works_for_nodes_with_one_right_child
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("d")
+    tree.insert("e")
+    assert_equal "d", tree.root_node.left.data
+    assert_nil tree.root_node.left.left.data
+    assert_equal "e", tree.root_node.left.right.data
+    tree.delete("d")
+    assert_equal "e", tree.root_node.left.data
+    assert_nil tree.root_node.left.left.data
+  end
+
+  def test_delete_works_for_nodes_with_no_children
+    tree = BinarySearchTree.new
+    tree.insert("f")
+    tree.insert("d")
+    tree.insert("c")
+    assert_equal "d", tree.root_node.left.data
+    assert_nil tree.root_node.left.right.data
+    assert_nil tree.root_node.left.left.left.data
+    assert_equal "c", tree.root_node.left.left.data
+    tree.delete("c")
+    assert_nil tree.root_node.left.left.data
+    assert_nil tree.root_node.left.right.data
   end
 
 end
